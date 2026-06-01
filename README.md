@@ -12,37 +12,7 @@
 npm install
 ```
 
-### 2. 配置百度地图
-
-打开 [百度地图开放平台](https://lbsyun.baidu.com/)，创建浏览器端应用，启用 JavaScript API，然后复制浏览器端 AK。
-
-复制环境变量文件：
-
-```bash
-cp .env.example .env
-```
-
-Windows PowerShell 可以使用：
-
-```powershell
-Copy-Item .env.example .env
-```
-
-在 `.env` 里填写百度地图浏览器端 AK：
-
-```env
-VITE_BAIDU_BROWSER_AK=你的百度地图浏览器端AK
-```
-
-百度地图开放平台里需要配置 Referer 白名单，例如：
-
-```text
-http://127.0.0.1:5173/*
-```
-
-也可以启动项目后，在页面右上角的地图 API 设置里填写 AK。
-
-### 3. 启动项目
+### 2. 启动项目
 
 ```bash
 npm run dev
@@ -52,6 +22,27 @@ npm run dev
 
 ```text
 http://127.0.0.1:5173/
+```
+
+### 3. 在网页里填写百度地图 API
+
+打开页面后，点击右上角的“地图 API 设置”，把百度地图浏览器端 AK 填进去并保存即可。
+
+还没有 AK 的话，可以从这里申请：
+
+- [百度地图开放平台](https://lbsyun.baidu.com/)
+- [百度地图开放平台控制台](https://lbsyun.baidu.com/apiconsole/key#/home)
+
+申请时创建“浏览器端”应用，启用 JavaScript API，并配置 Referer 白名单，例如：
+
+```text
+http://127.0.0.1:5173/*
+```
+
+如果想把 AK 固定在本地环境变量里，也可以复制 `.env.example` 为 `.env`，然后填写：
+
+```env
+VITE_BAIDU_BROWSER_AK=你的百度地图浏览器端AK
 ```
 
 ## 基本操作
