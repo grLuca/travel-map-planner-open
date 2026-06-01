@@ -1,21 +1,22 @@
 # Travel Map Planner
 
-Travel Map Planner is a browser-based itinerary planning tool built around an interactive map. It helps you arrange trip days, search places, manage route stops and dining stops, compare transport options, and save or export editable travel plans.
+一个以地图为核心的旅行路线规划工具。你可以在浏览器里创建多天旅行方案，搜索地点，安排路线点、住宿点和餐饮点，查看交通路线，并把方案保存在本地或导出为 JSON 文件。
 
-The app stores plans in the browser by default. No backend account or database is required.
+项目默认只使用浏览器本地存储，不需要账号，也不需要后端数据库。
 
-## Features
+## 功能特性
 
-- Map-first itinerary planning for multi-day trips
-- Route stops, accommodation stops, and dining stops
-- Clickable map markers and route segments with a detail panel
-- Baidu map rendering and place search with a browser-side AK
-- Optional Amap Web Service proxy for route/search APIs
-- Local draft and project library persistence
-- JSON export/import for editable trip plans
-- Responsive desktop and mobile layouts
+- 多天旅行方案管理
+- 地图点位展示与路线展示
+- 路线点、住宿点、餐饮点分开管理
+- 点击地图节点或路线段查看详情
+- 支持百度地图渲染、地点搜索与路线规划
+- 支持高德 Web Service 代理模式
+- 支持浏览器本地保存方案
+- 支持 JSON 导入和导出，方便备份或继续编辑
+- 支持桌面端和移动端布局
 
-## Tech Stack
+## 技术栈
 
 - React 19
 - TypeScript
@@ -24,43 +25,45 @@ The app stores plans in the browser by default. No backend account or database i
 - Testing Library
 - Lucide React
 
-## Getting Started
+## 本地启动
 
-Install dependencies:
+先安装依赖：
 
 ```bash
 npm install
 ```
 
-Start the app:
+启动开发服务器：
 
 ```bash
 npm run dev
 ```
 
-Open the URL printed by Vite, usually:
+终端会输出访问地址，通常是：
 
 ```text
 http://127.0.0.1:5173/
 ```
 
-Use `127.0.0.1` consistently during local testing. Browsers keep separate localStorage data for `localhost` and `127.0.0.1`.
+建议固定使用 `127.0.0.1`，不要在 `localhost` 和 `127.0.0.1` 之间来回切换。浏览器会把这两个地址当成不同站点，它们的本地保存数据也是分开的。
 
-## Map API Configuration
+## 地图 API 配置
 
-Copy the environment example:
+项目可以在无真实地图 Key 的情况下运行，此时可以使用 Mock 地图源体验基础交互。如果你要使用真实地图，需要配置百度或高德地图服务。
+
+复制环境变量示例：
 
 ```bash
 cp .env.example .env
 ```
 
-On Windows PowerShell:
+Windows PowerShell 可以使用：
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-Environment variables:
+`.env` 内容示例：
 
 ```env
 AMAP_WEB_SERVICE_KEY=
@@ -68,43 +71,196 @@ AMAP_PROXY_PORT=8787
 VITE_BAIDU_BROWSER_AK=
 ```
 
-### Baidu JavaScript API
+### 使用百度地图
 
-Create a browser-side Baidu Maps application and enable JavaScript API. The browser AK can be configured either through `.env` with `VITE_BAIDU_BROWSER_AK`, or inside the app from the map API settings dialog.
+百度地图用于浏览器端地图渲染、地点搜索和路线规划。
 
-Browser-side map keys are visible to users by design. Restrict allowed referers in the Baidu console before using a production key.
+1. 打开百度地图开放平台。
+2. 创建浏览器端应用。
+3. 启用 JavaScript API。
+4. 复制浏览器端 AK。
+5. 在百度控制台配置 Referer 白名单。
+6. 开发环境可以加入：`http://127.0.0.1:5173/*`。
 
-### Amap Proxy
+配置方式有两种：
 
-The Amap Web Service key is read only by the local proxy. Start it in a separate terminal:
+- 写入 `.env`：
+
+```env
+VITE_BAIDU_BROWSER_AK=你的百度浏览器端AK
+```
+
+- 或者启动页面后，点击右上角的地图 API 设置，在页面里填入 AK 并保存。
+
+注意：浏览器端地图 AK 会出现在前端请求里，这是地图 SDK 的正常工作方式。公开使用时一定要限制 Referer，不要使用无限制 AK。
+
+### 使用高德代理
+
+高德 Web Service Key 不会进入前端 bundle，而是由本地代理读取。
+
+先在 `.env` 里填写：
+
+```env
+AMAP_WEB_SERVICE_KEY=你的高德Web服务Key
+AMAP_PROXY_PORT=8787
+```
+
+然后单独开一个终端启动代理：
 
 ```bash
 npm run amap:proxy
 ```
 
-Then choose the Amap proxy map source in the app.
+再回到页面右上角，在地图源里选择高德代理。
 
-## Common Commands
+## 如何使用
+
+### 1. 进入控制台
+
+打开页面后，会先进入旅行控制台。这里可以：
+
+- 查看最近保存的旅行方案
+- 点击方案卡片切换当前选中方案
+- 点击打开进入地图规划页
+- 新建旅行项目
+- 导入之前导出的 JSON 文件
+
+### 2. 创建或打开方案
+
+你可以使用已有示例方案，也可以点击新建项目创建一个新的城市旅行方案。
+
+进入规划页后，顶部可以编辑：
+
+- 方案标题
+- 日期范围
+- 地图源
+- 地图 API 设置
+
+### 3. 添加地点
+
+在顶部搜索框输入地点名称，搜索结果可以添加到当天行程中。
+
+在路线规划模式下，搜索结果支持添加为：
+
+- 普通路线点
+- 住宿点
+- 餐饮点
+
+住宿点和餐饮点会在地图上用不同图标展示。
+
+### 4. 编辑当天路线
+
+左侧是当天行程列表。你可以：
+
+- 切换不同日期
+- 新增或删除日期
+- 调整点位顺序
+- 删除点位
+- 切换餐饮规划显示
+
+点击地图上的点位或路线段后，右侧详情面板会显示对应信息。
+
+### 5. 查看和调整交通方案
+
+路线段会显示不同交通方式，例如：
+
+- 公交
+- 打车
+- 步行
+- 手动填写
+
+如果真实地图服务返回了路线信息，会展示预计时间、费用、距离等信息。你也可以在详情面板里切换交通方案。
+
+### 6. 保存方案
+
+点击右上角保存方案，会把当前旅行方案保存到浏览器本地。
+
+本地保存使用的是浏览器 localStorage，不会上传到服务器。清理浏览器数据或换浏览器后，本地方案可能不可见，所以重要方案建议同时导出 JSON 备份。
+
+### 7. 导出和导入
+
+点击导出，可以把当前方案导出为 JSON 文件。
+
+这个 JSON 文件包含完整可编辑数据，之后可以通过控制台的导入按钮重新导入，继续编辑。
+
+建议在这些情况下导出备份：
+
+- 方案已经基本完成
+- 准备换电脑或换浏览器继续编辑
+- 准备分享给别人
+- 准备清理浏览器缓存前
+
+## 本地数据说明
+
+项目会使用浏览器 localStorage 保存以下数据：
+
+- `travel-map-planner:draft`：当前编辑草稿
+- `travel-map-planner:projects:v1`：本地方案库
+- `travel-map-planner:projects:v1:backups`：方案库滚动备份
+- `travel-map-planner:route-cache:v1`：路线规划缓存
+- `travel-map-planner:map-api-settings:v1`：地图 API 设置
+
+这些数据只保存在当前浏览器、当前站点来源下。
+
+特别注意：
+
+- `http://127.0.0.1:5173/` 和 `http://localhost:5173/` 是两套不同的本地数据。
+- 如果你在两个地址之间切换，可能会看到不同的方案列表。
+- 建议开发和使用时固定一个地址。
+
+## 常用命令
+
+启动开发环境：
 
 ```bash
 npm run dev
+```
+
+启动高德代理：
+
+```bash
 npm run amap:proxy
+```
+
+运行测试：
+
+```bash
 npm test
+```
+
+运行 lint：
+
+```bash
 npm run lint
+```
+
+构建生产版本：
+
+```bash
 npm run build
 ```
 
-## Data Storage
+## 常见问题
 
-The app uses browser localStorage for:
+### 为什么保存后看不到之前的方案？
 
-- `travel-map-planner:draft`: current editable draft
-- `travel-map-planner:projects:v1`: saved project list
-- `travel-map-planner:projects:v1:backups`: rolling raw backups
-- `travel-map-planner:route-cache:v1`: route planning cache
-- `travel-map-planner:map-api-settings:v1`: map API settings
+先确认你是否在同一个地址访问页面。`localhost` 和 `127.0.0.1` 的浏览器本地存储不互通。
 
-Exported JSON files can be imported later to continue editing.
+### 为什么真实地图不能用？
+
+检查地图 API Key 是否配置正确，并确认对应地图平台开启了需要的服务。百度浏览器端 AK 还需要配置 Referer 白名单。
+
+### 为什么高德路线不可用？
+
+高德 Web Service 需要本地代理。确认 `.env` 里有 `AMAP_WEB_SERVICE_KEY`，并且已经运行：
+
+```bash
+npm run amap:proxy
+```
+
+### 导出的 JSON 有什么用？
+
+导出的 JSON 是完整可编辑旅行方案，不只是截图或静态文档。你可以之后再次导入，继续调整路线和点位。
 
 ## License
 
